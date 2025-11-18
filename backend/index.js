@@ -4,6 +4,7 @@ import express from "express";
 import database from "./scripts/database.js";
 const charts=express();
 const accounts=database.collection("Accounts");
+let accountCreation=false;
 charts.use(express.json());
 charts.post("/createAccount", async function(request, response){
         const firstName=request.query.firstName;
@@ -13,19 +14,22 @@ charts.post("/createAccount", async function(request, response){
         const secondPassword=request.query.secondPassword;
         if(firstPassword==secondPassword){
             await accounts.insertOne({firstName:firstName, lastName:lastName, email:email, password:firstPassword});
-            response.send("Success");
+            response.json("Success");
+            accountCreation=true;
         }
         else{
-            response.send("Fail");
+            response.json("Fail");
+            accountCreation=false;
         }
 });
-charts.get("/signIn/:email/:password", async function(request, response){
-   const signInInfo=await accounts.find({_id:0, email:1}, [{email:request.params.email, password:request.params.password}]).toArray();
-   if(signInInfo.length>0)
-       response.send(signInInfo["username"]);
-   else{
-       response.send("");
-   }
+/*charts.use(function(request, response, next){
+    if(accountCreation)
+        response.redirect("/");
+    next();
+})*/
+charts.get("/signIn", async function(request, response){
+//   const signInInfo=await accounts.find({email:request.query.email, password:request.query.password}, {_id:0, email:1}).toArray();
+   response.send("hello");
 });
 charts.listen(9000, function(){
     console.log("Running");
