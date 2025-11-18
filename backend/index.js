@@ -23,11 +23,11 @@ charts.post("/createAccount", async function(request, response){
             accountCreation=false;
         }
 });
-/*charts.use(function(request, response, next){
+charts.use(function(request, response, next){
     if(accountCreation)
         response.redirect("/");
     next();
-})*/
+});
 charts.get("/signIn", async function(request, response){
    const signInInfo=await accounts.find({email:request.query.email, password:request.query.password}, {_id:0, name:0, password:0, email:1}).toArray();
    response.send(signInInfo);
