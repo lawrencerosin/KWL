@@ -5,6 +5,7 @@ import database from "./scripts/database.js";
 const charts=express();
 const accounts=database.collection("Accounts");
 let accountCreation=false;
+charts.use(cors());
 charts.use(express.json());
 charts.post("/createAccount", async function(request, response){
         const firstName=request.query.firstName;
@@ -28,8 +29,8 @@ charts.post("/createAccount", async function(request, response){
     next();
 })*/
 charts.get("/signIn", async function(request, response){
-//   const signInInfo=await accounts.find({email:request.query.email, password:request.query.password}, {_id:0, email:1}).toArray();
-   response.send("hello");
+   const signInInfo=await accounts.find({email:request.query.email, password:request.query.password}, {_id:0, name:0, password:0, email:1}).toArray();
+   response.send(signInInfo);
 });
 charts.listen(9000, function(){
     console.log("Running");
