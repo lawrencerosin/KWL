@@ -4,6 +4,7 @@ import express from "express";
 import database from "./scripts/database.js";
 const charts=express();
 const accounts=database.collection("Accounts");
+const files=database.collection("Charts")
 let accountCreation=false;
 charts.use(cors());
 charts.use(express.json());
@@ -32,6 +33,15 @@ charts.get("/signIn", async function(request, response){
    const signInInfo=await accounts.find({email:request.query.email, password:request.query.password}, {_id:0, name:0, password:0, email:1}).toArray();
    response.send(signInInfo);
 });
+charts.get("/open", async function(request, response){
+    const fileNames=await files.find({owner:request.query.email}, {_id:0, name:1});
+    response.send(fileNames);
+});
+charts.post("/saveAs", async function(request, response){
+    await files.insertOne({name:request.query.name, owner:request.query.email, content: request.query.content});
+    console.log("hello");
+    response.send("saved");
+})
 charts.listen(9000, function(){
     console.log("Running");
 })
