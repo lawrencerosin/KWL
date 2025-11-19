@@ -34,12 +34,11 @@ charts.get("/signIn", async function(request, response){
    response.send(signInInfo);
 });
 charts.get("/open", async function(request, response){
-    const fileNames=await files.find({owner:request.query.email}, {_id:0, name:1});
-    response.send(fileNames);
+    const file=await files.findOne({owner:request.query.email, name:request.query.name}, {_id:0, name:1, content:1});
+    response.json(file);
 });
 charts.post("/saveAs", async function(request, response){
     await files.insertOne({name:request.query.name, owner:request.query.email, content: request.query.content});
-    console.log("hello");
     response.send("saved");
 })
 charts.listen(9000, function(){
