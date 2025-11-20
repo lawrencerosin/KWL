@@ -79,6 +79,10 @@ charts.post("/createAccount", async function(request, response){
             accountCreation=false;
         }
 });
+charts.get("/matchingEmails/:email", async function(request, response){
+         const matchingEmails=await accounts.find({email:request.params.email});
+         response.json(matchingEmails);
+});
 charts.use(function(request, response, next){
     if(accountCreation)
         response.redirect("/");
@@ -97,7 +101,7 @@ charts.get("/viewFiles/:email", async function(request, response){
     const fileList=await files.find({owner:request.params.email}, {name:1, _id:0});
     response.json(fileList);
 });
-charts.use(updateContent);
+//charts.use(updateContent);
 charts.put("/save", async function(request, response){
     const result=await files.findOneAndUpdate({owner:request.query.email, name:request.query.name}, {$set:{content:newFile.content}});
     response.send(result);
