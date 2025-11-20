@@ -38,6 +38,24 @@ const fileSchema=new mongoose.Schema({
         required:true
     }
 });
+function updateContent(request, response, next){
+     newFile=new files({
+        name:request.query.name,
+        owner:request.query.owner,
+        content:[[], [], []]
+    });
+    const lines=request.query.content.split("\n");
+    let position=0;
+    for(let line of lines){
+        const parts=line.split(",");
+        for(let part of parts){
+            newFile.content[position%newFile.content.length]=part;
+            position++;
+        }
+    }
+    next();
+}
+
 const accounts=mongoose.model("Accounts", accountSchema, "Accounts");
 const files=mongoose.model("Charts", fileSchema, "Charts");
 let newFile;
@@ -75,27 +93,12 @@ charts.get("/open", async function(request, response){
     const file=await files.findOne({owner:request.query.email, name:request.query.name}, {_id:0, name:1, content:1});
     response.json(file);
 });
+charts.use(updateContent);
 charts.put("/save", async function(request, response){
-    await files.updateOne({owner:request.query.email, name:request.query.name}, {$set:{content:request.query.content}});
-    response.send("saved");
+    const result=await files.findOneAndUpdate({owner:request.query.email, name:request.query.name}, {$set:{content:newFile.content}});
+    response.send(result);
 });
-charts.use(function(request, response, next){
-    newFile=new files({
-        name:request.query.name,
-        owner:request.query.owner,
-        content:[[], [], []]
-    });
-    const lines=request.query.content.split("\n");
-    let position=0;
-    for(let line of lines){
-        const parts=line.split(",");
-        for(let part of parts){
-            newFile.content[position%newFile.content.length]=part;
-            position++;
-        }
-    }
-    next();
-});
+charts.use(updateContent);
 charts.post("/saveAs", async function(request, response){
     const result=await files.create({name:request.query.name, owner:request.query.owner, content: newFile.content, visibility:"private"});
     console.log(newFile.content);
@@ -104,8 +107,8 @@ charts.post("/saveAs", async function(request, response){
 charts.delete("/delete", async function(request, response){
     
       
-        await files.deleteOne({owner:request.query.email, name:request.query.name});
-        response.json("deleted");
+        const result=await files.deleteOne({owner:request.query.email, name:request.query.name});
+        response.json(result);
     
 });
 charts.listen(9000, function(){
