@@ -86,12 +86,16 @@ charts.use(function(request, response, next){
 });
 charts.get("/signIn", async function(request, response){
    const signInInfo=await accounts.findOne({email:request.query.email, password:request.query.password});
-   console.log(signInInfo);
+    
    response.json(signInInfo);
 });
 charts.get("/open", async function(request, response){
     const file=await files.findOne({owner:request.query.email, name:request.query.name}, {_id:0, name:1, content:1});
     response.json(file);
+});
+charts.get("/viewFiles/:email", async function(request, response){
+    const fileList=await files.find({owner:request.params.email}, {name:1, _id:0});
+    response.json(fileList);
 });
 charts.use(updateContent);
 charts.put("/save", async function(request, response){
