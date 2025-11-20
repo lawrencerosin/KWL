@@ -1,10 +1,46 @@
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
-import database from "./scripts/database.js";
+import mongoose from "./scripts/database.js";
 const charts=express();
-const accounts=database.collection("Accounts");
-const files=database.collection("Charts")
+const accountSchema=new mongoose.Schema({
+    firstName:{
+        type:"String",
+        require:true
+    },
+    lastName:{
+        type:"String",
+        required:true
+    },
+    email:{
+        type:"String",
+        required:true
+    },
+    password:{
+        type:"String",
+        required:true
+    }
+});
+const fileSchema=new mongoose.Schema({
+    owner:{
+        required:true,
+        type:"String"
+    },
+    name:{
+        required:true,
+        type:"String"
+    },
+    content:{
+        type:[["String"], ["String"], ["String"]]
+    },
+    visibility:{
+        type:"String",
+        required:true
+    }
+});
+const accounts=mongoose.model("Accounts", accountSchema, "Accounts");
+const files=mongoose.model("Charts", fileSchema, "Charts");
+let newFile;
 let accountCreation=false;
 charts.use(cors());
 charts.use(express.json());
@@ -15,8 +51,9 @@ charts.post("/createAccount", async function(request, response){
         const firstPassword=request.query.firstPassword;
         const secondPassword=request.query.secondPassword;
         if(firstPassword==secondPassword){
-            await accounts.insertOne({firstName:firstName, lastName:lastName, email:email, password:firstPassword});
-            response.json("Success");
+            const result=await accounts.create({firstName: firstName, lastName:lastName, email:email, password:firstPassword});
+            response.json(result);
+            
             accountCreation=true;
         }
         else{
@@ -30,17 +67,47 @@ charts.use(function(request, response, next){
     next();
 });
 charts.get("/signIn", async function(request, response){
-   const signInInfo=await accounts.find({email:request.query.email, password:request.query.password}, {_id:0, name:0, password:0, email:1}).toArray();
-   response.send(signInInfo);
+   const signInInfo=await accounts.findOne({email:request.query.email, password:request.query.password});
+   console.log(signInInfo);
+   response.json(signInInfo);
 });
 charts.get("/open", async function(request, response){
     const file=await files.findOne({owner:request.query.email, name:request.query.name}, {_id:0, name:1, content:1});
     response.json(file);
 });
-charts.post("/saveAs", async function(request, response){
-    await files.insertOne({name:request.query.name, owner:request.query.email, content: request.query.content});
+charts.put("/save", async function(request, response){
+    await files.updateOne({owner:request.query.email, name:request.query.name}, {$set:{content:request.query.content}});
     response.send("saved");
-})
+});
+charts.use(function(request, response, next){
+    newFile=new files({
+        name:request.query.name,
+        owner:request.query.owner,
+        content:[[], [], []]
+    });
+    const lines=request.query.content.split("\n");
+    let position=0;
+    for(let line of lines){
+        const parts=line.split(",");
+        for(let part of parts){
+            newFile.content[position%newFile.content.length]=part;
+            position++;
+        }
+    }
+    next();
+});
+charts.post("/saveAs", async function(request, response){
+    const result=await files.create({name:request.query.name, owner:request.query.owner, content: newFile.content, visibility:"private"});
+    console.log(newFile.content);
+    response.json(result);
+});
+charts.delete("/delete", async function(request, response){
+    
+      
+        await files.deleteOne({owner:request.query.email, name:request.query.name});
+        response.json("deleted");
+    
+});
 charts.listen(9000, function(){
     console.log("Running");
 })

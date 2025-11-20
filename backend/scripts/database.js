@@ -1,6 +1,4 @@
-import { MongoClient } from "mongodb";  
-const client=new MongoClient(process.env.DATABASE_LINK);
-await client.connect();
-const database=client.db("KWL");
+import mongoose from "mongoose";
+mongoose.connect(process.env.DATABASE_LINK);
 console.log("Connected to database");
-export default database;
+export default mongoose;
