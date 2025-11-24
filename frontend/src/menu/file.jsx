@@ -99,7 +99,7 @@ function add(column, content){
     }
 export default function File(){
 
-    const {visibility}=useContext(Info);
+    const {visibility, setVisibility}=useContext(Info);
     const {shared, setShared}=useContext(HoldShared);
     function newFile(){
         kwl=document.getElementById("kwl");
@@ -108,7 +108,7 @@ export default function File(){
     }
     function open(){
         goToSignInPage(
-        async function(){
+         async function(){
             kwl=document.getElementById("kwl");
             const name=prompt("What file do you want to open?");
             const file=await fetch(`http://localhost:9000/open?name=${name}&email=${sessionStorage.getItem("email")}`);
@@ -119,6 +119,7 @@ export default function File(){
             else{
                 reset();
                 setShared(fileContent["shared"]);
+                setVisibility(fileContent["visibility"]);
                 read(fileContent["content"], name);
             }
        });
