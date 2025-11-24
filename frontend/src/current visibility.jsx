@@ -1,3 +1,6 @@
 export default function CurrentVisibility({visibility}){
-    return <h1>{visibility}</h1>
+    const CSS={
+        color:"white"
+    }
+    return <h1 style={CSS}>{visibility}</h1>
 }
