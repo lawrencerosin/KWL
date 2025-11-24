@@ -118,14 +118,14 @@ charts.get("/viewChart/:id", async function(request, response){
 });
 charts.use(updateContent);
 charts.put("/save", async function(request, response){
-     console.log(newFile);
+     
    
     const result=await files.updateOne({owner:request.query.email, name:request.query.name}, {$set:{content:newFile.content, visibility:newFile.visibility, shared:newFile.shared}});
     response.send(result);
 });
 charts.use(updateContent);
 charts.post("/saveAs", async function(request, response){
-    const result=await files.create({name:request.query.name, owner:request.query.owner, content: newFile.content, visibility:request.query.visibility, shared:request.query.shared});
+    const result=await files.create({name:request.query.name, owner:request.query.owner, content: newFile.content, visibility:newFile.visibility, shared:newFile.shared});
     console.log(newFile.content);
     response.json(result);
 });

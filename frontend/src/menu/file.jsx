@@ -169,7 +169,7 @@ export default function File(){
                 const matchingParts=await matchingFiles.json();
             
                 if(matchingParts===null){
-                    await fetch(`http://localhost:9000/saveAs?owner=${sessionStorage.getItem("email")}&name=${name}&content=${getChartContent()}&visibility=${holdVisibility}`,
+                    await fetch(`http://localhost:9000/saveAs?owner=${sessionStorage.getItem("email")}&name=${name}&content=${getChartContent()}&visibility=${visibility}&shared=${getSharees(shared)}`,
                     {  method:"POST"}
                     );
             }
