@@ -108,8 +108,9 @@ charts.get("/viewFiles/:email", async function(request, response){
     const fileList=await files.find({owner:request.params.email}, {name:1, _id:0});
     response.json(fileList);
 });
-charts.get("/sharedCharts", async function(request, response){
-     const sharedCharts=await files.find({visibility:"Public"}, {name:1, _id:1});
+charts.get("/sharedCharts/:email", async function(request, response){
+     const sharedCharts=await files.find({$or:[{visibility:"Public"}, 
+        {visibility:"Shared", shared:request.params.email}]}, {name:1, _id:1});
      response.json(sharedCharts);
 });
 charts.get("/viewChart/:id", async function(request, response){

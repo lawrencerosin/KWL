@@ -8,7 +8,7 @@ export default function SharedFiles(){
      const[sharedFileList, setSharedFileList]=useState([]);
    
     async function getShared(){
-        sharedFiles=await fetch("http://localhost:9000/sharedCharts");
+        sharedFiles=await fetch("http://localhost:9000/sharedCharts/"+sessionStorage.getItem("email"));
         
         sharedFileParts=await sharedFiles.json();
          const fileList=sharedFileParts.map(function(part, position){
