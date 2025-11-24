@@ -1,6 +1,6 @@
 import { Link } from "react-router"
 import { useRef } from "react";
-import setBodyColor from "../../body color";
+import {setBodyColor} from "../../body color";
 export default function SignIn(){
      
     const email=useRef("");

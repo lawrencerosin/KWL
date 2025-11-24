@@ -43,5 +43,5 @@ export default function Visibilities(){
         else  
           return <div className="visibility-menu-option menu-option" onClick={changeVisibility} style={NOT_SELECTED}>{choice}</div>
    });
-   return <><Menu name="Visibility" menuClass="visibility-menu-option">{choices}</Menu><h1 style={VISIBILITY_CSS}>{visibility}</h1></>;
+   return <><Menu name="Visibility" menuClass="visibility-menu-option">{choices}</Menu></>;
 }

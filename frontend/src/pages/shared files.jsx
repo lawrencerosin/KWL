@@ -2,11 +2,12 @@
  import {useState} from "react";
  import { Link } from "react-router";
  import { reset } from "../menu/file";
+ import {setBodyColor} from "../../body color";
 export default function SharedFiles(){
     let sharedFiles;
     let sharedFileParts=[];
      const[sharedFileList, setSharedFileList]=useState([]);
-   
+    setBodyColor("yellow");
     async function getShared(){
         sharedFiles=await fetch("http://localhost:9000/sharedCharts/"+sessionStorage.getItem("email"));
         
