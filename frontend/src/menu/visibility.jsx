@@ -40,8 +40,6 @@ export default function Visibilities(){
          
         if(position==0)
           return <div className="visibility-menu-option menu-option" onClick={changeVisibility} style={SELECTED}>{choice}</div>;
-        else if(position==1)
-          return <><div className="visibility-menu-option menu-option" style={SHARED_CSS} onClick={changeVisibility} onMouseOver={showSubmenu} >{choice}</div><Shared shared={shared} setShared={setShared}/></>
         else  
           return <div className="visibility-menu-option menu-option" onClick={changeVisibility} style={NOT_SELECTED}>{choice}</div>
    });

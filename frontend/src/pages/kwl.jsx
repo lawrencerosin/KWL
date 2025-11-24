@@ -10,5 +10,5 @@ export default function KWL(){
     setBodyColor("orange");
     const [visibility, setVisibility]=useState("Private");
     const holdInfo={visibility, setVisibility};
-    return <Info.Provider value={holdInfo}><div style={CSS}><Menubar/><OpenedFile/><ChartPageSignInLink/><Chart/><FileList/></div></Info.Provider>;
+    return <Info.Provider value={holdInfo}><div style={CSS}><Menubar/><br/><OpenedFile/><ChartPageSignInLink/><Chart/><FileList/></div></Info.Provider>;
 }

@@ -1,4 +1,5 @@
 import "./menu.css";
+import Menu from "./menu";
 function find(emails, email){
     for(let position=0; position<emails.length; position++)
         if(emails[position]==email)
@@ -6,15 +7,14 @@ function find(emails, email){
     return -1;
 }
 export default function Shared({shared, setShared}){
-    const CSS={
-        display:"none"
-    }
+     
     function shareChart(){
         const sharee=prompt("Enter the email address you want to share with.");
         const shareCopy=[...shared];
         shareCopy.push(sharee);
         setShared(shareCopy);
     }
+    
     const ADD_CSS={
         backgroundColor:"yellow"
     }
@@ -29,7 +29,7 @@ export default function Shared({shared, setShared}){
            copiedShared.splice(emailLoc, 1);
            setShared(copiedShared);
         }
-        return <div className="visibility-menu-option"><span>{email}</span><button onClick={removeShare} style={REMOVE_CSS}>Remove</button></div>;
+        return <div className="shared-menu-option"><span>{email}</span><button onClick={removeShare} style={REMOVE_CSS}>Remove</button></div>;
     });
-    return <div style={CSS}>{emails}<button onClick={shareChart} style={ADD_CSS}>Add</button></div>;
+    return <Menu menuClass="shared-menu-option" name="Shared With">{emails}<button style={ADD_CSS} onClick={shareChart}>Add</button></Menu>;
 }
