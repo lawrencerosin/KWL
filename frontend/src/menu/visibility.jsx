@@ -1,11 +1,12 @@
- import { useContext, useState } from "react";
+ import { useContext} from "react";
  import Menu from "./menu";
 import { Info } from "../pages/kwl";
 import Shared from "./shared";
+import { HoldShared } from "./menubar";
 export let holdVisibility;
 export default function Visibilities(){
    const {visibility, setVisibility}=useContext(Info);
-   const [shared, setShared]=useState([]);
+   const {shared, setShared}=useContext(HoldShared);
    function changeVisibility(event){
       setVisibility(event.target.textContent);
       event.target.style.backgroundColor="white";
@@ -19,6 +20,9 @@ export default function Visibilities(){
     event.target.nextElementSibling.style.display="block";
      
    }
+   function hideSubmenu(event){
+    event.target.nextElementSibling.style.display="none";
+   }
    const VISIBILITIES=["Private", "Shared", "Public"];
    const VISIBILITY_CSS={
      color:"white"
@@ -31,14 +35,13 @@ export default function Visibilities(){
           backgroundColor:"lightgreen"
         };
         const SHARED_CSS={
-          display:"flex",
-          flexDirection:"row"
+          whiteSpace:"nowrap"
         };
          
         if(position==0)
           return <div className="visibility-menu-option menu-option" onClick={changeVisibility} style={SELECTED}>{choice}</div>;
         else if(position==1)
-          return <nav style={SHARED_CSS}><div className="visibility-menu-option menu-option" onClick={changeVisibility} onMouseEnter={showSubmenu} style={NOT_SELECTED}>{choice}</div><Shared shared={shared} setShared={setShared}/></nav>
+          return <><div className="visibility-menu-option menu-option" style={SHARED_CSS} onClick={changeVisibility} onMouseOver={showSubmenu} >{choice}</div><Shared shared={shared} setShared={setShared}/></>
         else  
           return <div className="visibility-menu-option menu-option" onClick={changeVisibility} style={NOT_SELECTED}>{choice}</div>
    });

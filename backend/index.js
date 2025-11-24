@@ -36,13 +36,19 @@ const fileSchema=new mongoose.Schema({
     visibility:{
         type:"String",
         required:true
+    },
+    shared:{
+        type:["String"]
     }
 });
+let newFile;
 function updateContent(request, response, next){
      newFile=new files({
         name:request.query.name,
         owner:request.query.owner,
-        content:[[], [], []]
+        content:[[], [], []],
+        visibility:request.query.visibility,
+        shared:request.query.shared.split(",")
     });
     const lines=request.query.content.split("\n");
     let position=0;
@@ -52,14 +58,14 @@ function updateContent(request, response, next){
             newFile.content[position%3].push(part);
             position++;
         }
-        console.log()
+         
     }
     next();
 }
 
 const accounts=mongoose.model("Accounts", accountSchema, "Accounts");
 const files=mongoose.model("Charts", fileSchema, "Charts");
-let newFile;
+
 let accountCreation=false;
 charts.use(cors());
 charts.use(express.json());
@@ -112,13 +118,14 @@ charts.get("/viewChart/:id", async function(request, response){
 });
 charts.use(updateContent);
 charts.put("/save", async function(request, response){
-     console.log(newFile.content);
-    const result=await files.updateOne({owner:request.query.email, name:request.query.name}, {$set:{content:newFile.content, visibility:request.query.visibility}});
+     console.log(newFile);
+   
+    const result=await files.updateOne({owner:request.query.email, name:request.query.name}, {$set:{content:newFile.content, visibility:newFile.visibility, shared:newFile.shared}});
     response.send(result);
 });
-//charts.use(updateContent);
+charts.use(updateContent);
 charts.post("/saveAs", async function(request, response){
-    const result=await files.create({name:request.query.name, owner:request.query.owner, content: newFile.content, visibility:request.query.visibility});
+    const result=await files.create({name:request.query.name, owner:request.query.owner, content: newFile.content, visibility:request.query.visibility, shared:request.query.shared});
     console.log(newFile.content);
     response.json(result);
 });

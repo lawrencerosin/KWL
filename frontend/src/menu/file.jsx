@@ -5,6 +5,7 @@ import "./menu.css";
 import "../file.css";
 import Menu from "./menu"; 
 import { Info } from "../pages/kwl";
+import { HoldShared } from "./menubar";
 let kwl;
 export function reset(){
     kwl=document.getElementById("kwl");
@@ -39,6 +40,14 @@ function add(column, content){
         const addButton=buttons[buttons.length-1];//Is the last button
         column.insertBefore( item, addButton);
     }
+    function getSharees(shared){
+      let sharees="";
+      for(let email of shared){
+        sharees+=email+",";
+
+      }
+      return sharees;
+    }
     function getChartContent(){ 
         let chart="";
         for(let position1=0; position1<kwl.children.length; position1++){
@@ -71,7 +80,7 @@ function add(column, content){
             });
             addItem.then(function(){
                 sessionStorage.setItem("name", name);
-                console.log(name);
+               
             },
         function(){
             alert("Unable to open file.");
@@ -88,7 +97,7 @@ function add(column, content){
 export default function File(){
 
     const {visibility}=useContext(Info);
-    
+    const {shared}=useContext(HoldShared);
     function newFile(){
         kwl=document.getElementById("kwl");
         sessionStorage.removeItem("name");
@@ -135,7 +144,8 @@ export default function File(){
                 if(sessionStorage.getItem("name")===null)
                     saveAs();
                 else{
-                    await fetch(`http://localhost:9000/save?email=${sessionStorage.getItem("email")}&name=${sessionStorage.getItem("name")}&content=${getChartContent()}&visibility=${visibility}`,
+                     
+                    await fetch(`http://localhost:9000/save?email=${sessionStorage.getItem("email")}&name=${sessionStorage.getItem("name")}&content=${getChartContent()}&visibility=${visibility}&shared=${getSharees(shared)}`,
                     {  method:"PUT"}
                     );
 
