@@ -41,12 +41,15 @@ function add(column, content){
         column.insertBefore( item, addButton);
     }
     function getSharees(shared){
-      let sharees="";
-      for(let email of shared){
-        sharees+=email+",";
-
+      if(shared.length==0)
+        return "";
+      else{
+        let sharees=shared[0];
+        for(let position=1; position<shared.length; position++){
+            sharees+=","+shared[position];
+        }
+        return sharees;
       }
-      return sharees;
     }
     function getChartContent(){ 
         let chart="";
@@ -97,7 +100,7 @@ function add(column, content){
 export default function File(){
 
     const {visibility}=useContext(Info);
-    const {shared}=useContext(HoldShared);
+    const {shared, setShared}=useContext(HoldShared);
     function newFile(){
         kwl=document.getElementById("kwl");
         sessionStorage.removeItem("name");
@@ -110,11 +113,12 @@ export default function File(){
             const name=prompt("What file do you want to open?");
             const file=await fetch(`http://localhost:9000/open?name=${name}&email=${sessionStorage.getItem("email")}`);
             const fileContent=await file.json();
-        
+            
             if(fileContent===null)
                 alert("You do not have a file named "+name+".");
             else{
                 reset();
+                setShared(fileContent["shared"]);
                 read(fileContent["content"], name);
             }
        });

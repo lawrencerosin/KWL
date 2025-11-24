@@ -101,7 +101,7 @@ charts.get("/signIn", async function(request, response){
    response.json(signInInfo);
 });
 charts.get("/open", async function(request, response){
-    const file=await files.findOne({owner:request.query.email, name:request.query.name}, {_id:0, name:1, content:1});
+    const file=await files.findOne({owner:request.query.email, name:request.query.name}, {_id:0, name:1, content:1, visibility:1, shared:1});
     response.json(file);
 });
 charts.get("/viewFiles/:email", async function(request, response){
