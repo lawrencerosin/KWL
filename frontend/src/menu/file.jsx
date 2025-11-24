@@ -104,6 +104,8 @@ export default function File(){
     function newFile(){
         kwl=document.getElementById("kwl");
         sessionStorage.removeItem("name");
+        setShared([]);
+        setVisibility("Private");
         reset();
     }
     function open(){
