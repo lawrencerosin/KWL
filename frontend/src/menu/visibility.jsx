@@ -34,10 +34,7 @@ export default function Visibilities(){
         const NOT_SELECTED={
           backgroundColor:"lightgreen"
         };
-        const SHARED_CSS={
-          whiteSpace:"nowrap"
-        };
-         
+       
         if(position==0)
           return <div className="visibility-menu-option menu-option" onClick={changeVisibility} style={SELECTED}>{choice}</div>;
         else  
