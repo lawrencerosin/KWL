@@ -171,9 +171,13 @@ export default function File(){
                 const matchingParts=await matchingFiles.json();
             
                 if(matchingParts===null){
-                    await fetch(`http://localhost:9000/saveAs?owner=${sessionStorage.getItem("email")}&name=${name}&content=${getChartContent()}&visibility=${visibility}&shared=${getSharees(shared)}`,
-                    {  method:"POST"}
-                    );
+                    if(name.length>0){
+                        await fetch(`http://localhost:9000/saveAs?owner=${sessionStorage.getItem("email")}&name=${name}&content=${getChartContent()}&visibility=${visibility}&shared=${getSharees(shared)}`,
+                        {  method:"POST"}
+                        );
+                    }
+                    else
+                        alert("You must put in a file name.");
             }
             else{
                 alert("You already have a file named "+name+". To overwrite it please open the file, and click \"Save\" in the File menu.");
