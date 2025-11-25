@@ -7,7 +7,7 @@ export default function CreateAccount(){
     const email=useRef("");
     const password=useRef("");
     const confirmPassword=useRef("");
-    setBodyColor("orange");
+    setBodyColor("gold");
     const BUTTON_CSS={
         backgroundColor:"yellow"
     }
