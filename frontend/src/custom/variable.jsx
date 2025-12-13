@@ -1,3 +1,5 @@
+import Type from "./type";
+
 export default function Variable({setter}){
     function setControl(event){
        
@@ -7,13 +9,7 @@ export default function Variable({setter}){
     return (<variable onClick={setControl}>
         Variable 
         <input type="text" placeholder="Name of Variable"/>
-        Data Type:<select>
-            <option>Boolean</option>
-            <option>Character</option>
-            <option>Integer</option>
-            <option>Real Number</option>
-            <option>String</option>
-        </select>
+        <Type/>
         Changeable <input type="checkbox" checked/>
         </variable>);
 }

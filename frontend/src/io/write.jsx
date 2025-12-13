@@ -1,9 +1,9 @@
-import { useRef, useContext } from "react";  
+import { useRef} from "react";  
 export default function Write({ setter}){
     const text=useRef("");
      function setControl(event){
        
-     setter(event.target);
+       setter(event.target);
        
      }
    

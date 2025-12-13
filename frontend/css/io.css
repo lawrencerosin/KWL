@@ -1,0 +1,10 @@
+write{
+    background-color:purple;
+    width:500px;
+    padding-right:10px;
+}
+read{
+    background-color:red;
+    width:300px;
+     padding-right:10px;
+}
