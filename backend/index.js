@@ -2,7 +2,9 @@ import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import mongoose from "./scripts/database.js";
+import nodemailer from "nodemailer";
 const charts=express();
+let code="";
 const accountSchema=new mongoose.Schema({
     firstName:{
         type:"String",
@@ -42,6 +44,29 @@ const fileSchema=new mongoose.Schema({
     }
 });
 let newFile;
+/*function sendEmail(sendTo, subject, message){
+  
+    const emailer=nodemailer.createTransport({
+        service:"gmail",
+        auth:{
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
+        }
+
+    });
+    const email={
+        from:  process.env.EMAIL,
+        to: sendTo,
+        subject:subject,
+        text:message
+    };
+    emailer.sendMail(email, function(problem){
+        if(problem)
+            console.log(problem);
+        else
+            console.log("Successfully sent email.");
+    })
+}*/
 function updateContent(request, response, next){
      newFile=new files({
         name:request.query.name,
@@ -69,14 +94,24 @@ const files=mongoose.model("Charts", fileSchema, "Charts");
 let accountCreation=false;
 charts.use(cors());
 charts.use(express.json());
+charts.use(function(request, response, next){
+   code="";
+   for(let cycle=1; cycle<=5; cycle++){
+    const digit=Math.floor(Math.random()*5);
+    code+=digit;
+   }
+   next();
+});
+
 charts.post("/createAccount", async function(request, response){
         const firstName=request.query.firstName;
         const lastName=request.query.lastName;
         const email=request.query.email;
         const firstPassword=request.query.firstPassword;
         const secondPassword=request.query.secondPassword;
+        
         if(firstPassword==secondPassword){
-            const result=await accounts.create({firstName: firstName, lastName:lastName, email:email, password:firstPassword});
+            const result=await accounts.create({firstName: firstName, lastName:lastName, email:email, password:firstPassword, activationCode: code, activated:false});
             response.json(result);
             
             accountCreation=true;
@@ -85,6 +120,7 @@ charts.post("/createAccount", async function(request, response){
             response.json("Fail");
             accountCreation=false;
         }
+        sendEmail(email, "Your Activation Code", `Your activation code is ${code}. You have 1 hour to enter it, and activate your account.`);
 });
 charts.get("/matchingEmails/:email", async function(request, response){
          const matchingEmails=await accounts.find({email:request.params.email});
